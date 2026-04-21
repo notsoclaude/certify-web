@@ -35,4 +35,4 @@ databases:
   - name: certify-db
     plan: free
     databaseName: certify_db
-    user: postgres
+    user: certify_user
