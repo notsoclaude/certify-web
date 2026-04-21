@@ -1,0 +1,126 @@
+/* EmployeeTable Styles */
+
+.table-container {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.employee-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.employee-table th,
+.employee-table td {
+  padding: 16px;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.employee-table th {
+  background: #f9fafb;
+  font-weight: 600;
+  color: #374151;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.employee-table tr:hover {
+  background: #f9fafb;
+}
+
+.mono {
+  font-family: 'Courier New', monospace;
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+.title-cell strong {
+  color: #1f2937;
+  font-size: 1rem;
+}
+
+.badge {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.type-full-time {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.type-part-time {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.type-internship {
+  background: #e0e7ff;
+  color: #3730a3;
+}
+
+.type-contract {
+  background: #fce7f3;
+  color: #9d174d;
+}
+
+.btn-view {
+  display: inline-block;
+  padding: 8px 16px;
+  background: #2563eb;
+  color: white;
+  text-decoration: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+
+.btn-view:hover {
+  background: #1d4ed8;
+}
+
+.table-footer {
+  display: flex;
+  justify-content: space-between;
+  padding: 16px;
+  background: #f9fafb;
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+.no-data {
+  text-align: center;
+  padding: 60px;
+  color: #6b7280;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .employee-table {
+    font-size: 0.85rem;
+  }
+  
+  .employee-table th,
+  .employee-table td {
+    padding: 12px 8px;
+  }
+  
+  .table-footer {
+    flex-direction: column;
+    gap: 8px;
+    text-align: center;
+  }
+}

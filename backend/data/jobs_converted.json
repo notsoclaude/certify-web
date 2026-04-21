@@ -1,0 +1,104 @@
+{
+  "source_file": "jobs.xml",
+  "converted_at": "2026-04-15T06:43:30.076920",
+  "job_count": 4,
+  "jobs": [
+    {
+      "job_id": "J2001",
+      "title": "Backend Developer",
+      "company": "CloudNova Systems",
+      "location": "Quezon City, PH",
+      "type": "full-time",
+      "salary_min": "60000",
+      "salary_max": "110000",
+      "requirements": [
+        "Python",
+        "Django",
+        "Flask",
+        "REST API Design",
+        "PostgreSQL",
+        "Redis",
+        "Docker",
+        "Git",
+        "Linux"
+      ],
+      "description": "Build scalable backend services and distributed APIs.",
+      "posted_date": "2026-04-10",
+      "expiry_date": "",
+      "source": "legacy_xml",
+      "converted_at": "2026-04-15T06:43:30.076861"
+    },
+    {
+      "job_id": "J2002",
+      "title": "Frontend Developer",
+      "company": "BrightUI Studio",
+      "location": "Makati, PH",
+      "type": "contract",
+      "salary_min": "45000",
+      "salary_max": "85000",
+      "requirements": [
+        "HTML5",
+        "CSS3",
+        "JavaScript (ES6+)",
+        "React.js",
+        "Next.js",
+        "TypeScript",
+        "Tailwind CSS",
+        "Redux",
+        "REST API Integration"
+      ],
+      "description": "Create modern responsive web applications.",
+      "posted_date": "2026-04-12",
+      "expiry_date": "",
+      "source": "legacy_xml",
+      "converted_at": "2026-04-15T06:43:30.076893"
+    },
+    {
+      "job_id": "J2003",
+      "title": "Data Engineer",
+      "company": "DataForge Analytics",
+      "location": "Remote",
+      "type": "full-time",
+      "salary_min": "70000",
+      "salary_max": "130000",
+      "requirements": [
+        "Python",
+        "SQL",
+        "ETL Pipelines",
+        "Apache Spark",
+        "Airflow",
+        "Data Warehousing",
+        "BigQuery",
+        "AWS S3"
+      ],
+      "description": "Design and maintain large-scale data pipelines.",
+      "posted_date": "2026-04-13",
+      "expiry_date": "",
+      "source": "legacy_xml",
+      "converted_at": "2026-04-15T06:43:30.076902"
+    },
+    {
+      "job_id": "J2004",
+      "title": "DevOps Engineer",
+      "company": "InfraCore Tech",
+      "location": "Manila, PH",
+      "type": "full-time",
+      "salary_min": "80000",
+      "salary_max": "150000",
+      "requirements": [
+        "Linux",
+        "Docker",
+        "Kubernetes",
+        "CI/CD (GitHub Actions)",
+        "AWS",
+        "Terraform",
+        "Networking"
+      ],
+      "description": "Manage cloud infrastructure and deployment pipelines.",
+      "posted_date": "2026-04-14",
+      "expiry_date": "",
+      "source": "legacy_xml",
+      "converted_at": "2026-04-15T06:43:30.076910"
+    }
+  ]
+}

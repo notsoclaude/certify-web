@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jobs source="CERTify-Legacy-System">
+
+  <job id="J2001">
+    <title>Backend Developer</title>
+    <company>CloudNova Systems</company>
+    <location>Quezon City, PH</location>
+    <type>full-time</type>
+    <work_mode>hybrid</work_mode>
+
+    <salary>
+      <min>60000</min>
+      <max>110000</max>
+    </salary>
+
+    <skills>
+      <skill>Python</skill>
+      <skill>Django</skill>
+      <skill>Flask</skill>
+      <skill>REST API Design</skill>
+      <skill>PostgreSQL</skill>
+      <skill>Redis</skill>
+      <skill>Docker</skill>
+      <skill>Git</skill>
+      <skill>Linux</skill>
+    </skills>
+
+    <description>Build scalable backend services and distributed APIs.</description>
+    <posted_date>2026-04-10</posted_date>
+  </job>
+
+  <job id="J2002">
+    <title>Frontend Developer</title>
+    <company>BrightUI Studio</company>
+    <location>Makati, PH</location>
+    <type>contract</type>
+    <work_mode>remote</work_mode>
+
+    <salary>
+      <min>45000</min>
+      <max>85000</max>
+    </salary>
+
+    <skills>
+      <skill>HTML5</skill>
+      <skill>CSS3</skill>
+      <skill>JavaScript (ES6+)</skill>
+      <skill>React.js</skill>
+      <skill>Next.js</skill>
+      <skill>TypeScript</skill>
+      <skill>Tailwind CSS</skill>
+      <skill>Redux</skill>
+      <skill>REST API Integration</skill>
+    </skills>
+
+    <description>Create modern responsive web applications.</description>
+    <posted_date>2026-04-12</posted_date>
+  </job>
+
+  <job id="J2003">
+    <title>Data Engineer</title>
+    <company>DataForge Analytics</company>
+    <location>Remote</location>
+    <type>full-time</type>
+
+    <salary>
+      <min>70000</min>
+      <max>130000</max>
+    </salary>
+
+    <skills>
+      <skill>Python</skill>
+      <skill>SQL</skill>
+      <skill>ETL Pipelines</skill>
+      <skill>Apache Spark</skill>
+      <skill>Airflow</skill>
+      <skill>Data Warehousing</skill>
+      <skill>BigQuery</skill>
+      <skill>AWS S3</skill>
+    </skills>
+
+    <description>Design and maintain large-scale data pipelines.</description>
+    <posted_date>2026-04-13</posted_date>
+  </job>
+
+  <job id="J2004">
+    <title>DevOps Engineer</title>
+    <company>InfraCore Tech</company>
+    <location>Manila, PH</location>
+    <type>full-time</type>
+
+    <salary>
+      <min>80000</min>
+      <max>150000</max>
+    </salary>
+
+    <skills>
+      <skill>Linux</skill>
+      <skill>Docker</skill>
+      <skill>Kubernetes</skill>
+      <skill>CI/CD (GitHub Actions)</skill>
+      <skill>AWS</skill>
+      <skill>Terraform</skill>
+      <skill>Networking</skill>
+    </skills>
+
+    <description>Manage cloud infrastructure and deployment pipelines.</description>
+    <posted_date>2026-04-14</posted_date>
+  </job>
+
+</jobs>

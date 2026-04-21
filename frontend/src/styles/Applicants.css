@@ -1,0 +1,443 @@
+/* Applicants.css - Matches EmployeeTable.css styling */
+
+.applicants-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+}
+
+/* Header Styles */
+.applicants-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #e1e8ed;
+}
+
+.header-left {
+  flex: 1;
+}
+
+.btn-back {
+  background: none;
+  border: none;
+  color: #4a90e2;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: color 0.2s;
+}
+
+.btn-back:hover {
+  color: #357abd;
+}
+
+.applicants-header h1 {
+  margin: 0 0 8px 0;
+  font-size: 28px;
+  color: #1a1a1a;
+  font-weight: 600;
+}
+
+.job-title {
+  margin: 0;
+  color: #666;
+  font-size: 16px;
+}
+
+.header-stats {
+  display: flex;
+  gap: 16px;
+}
+
+.stat-card {
+  background: #f8f9fa;
+  border: 2px solid #e1e8ed;
+  border-radius: 12px;
+  padding: 16px 24px;
+  text-align: center;
+  min-width: 100px;
+}
+
+.stat-card.shortlisted {
+  background: #e8f5e9;
+  border-color: #4caf50;
+}
+
+.stat-number {
+  display: block;
+  font-size: 32px;
+  font-weight: 700;
+  color: #1a1a1a;
+  line-height: 1;
+}
+
+.stat-card.shortlisted .stat-number {
+  color: #2e7d32;
+}
+
+.stat-label {
+  display: block;
+  font-size: 12px;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 4px;
+}
+
+/* Filters Bar */
+.filters-bar {
+  background: #fff;
+  border: 1px solid #e1e8ed;
+  border-radius: 8px;
+  padding: 16px 20px;
+  margin-bottom: 20px;
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.filter-group label {
+  font-size: 14px;
+  color: #555;
+  font-weight: 500;
+}
+
+.filter-group select {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  background: #fff;
+  cursor: pointer;
+  min-width: 180px;
+}
+
+.filter-group select:focus {
+  outline: none;
+  border-color: #4a90e2;
+}
+
+/* Table Styles - Matching EmployeeTable.css */
+.applicants-table-container {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  overflow: hidden;
+  border: 1px solid #e1e8ed;
+}
+
+.applicants-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.applicants-table thead {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.applicants-table th {
+  padding: 16px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.applicants-table tbody tr {
+  border-bottom: 1px solid #e1e8ed;
+  transition: background-color 0.2s;
+}
+
+.applicants-table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+.applicants-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.applicants-table td {
+  padding: 16px;
+  color: #333;
+}
+
+/* Applicant Info Cell */
+.applicant-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.applicant-avatar {
+  width: 44px;
+  height: 44px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 14px;
+  text-transform: uppercase;
+}
+
+.applicant-name {
+  display: flex;
+  flex-direction: column;
+}
+
+.applicant-name strong {
+  color: #1a1a1a;
+  font-size: 14px;
+}
+
+.applicant-headline {
+  font-size: 12px;
+  color: #666;
+  margin-top: 2px;
+}
+
+/* Contact Info */
+.contact-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.contact-item {
+  font-size: 13px;
+  color: #555;
+}
+
+/* Experience Badge */
+.experience-badge {
+  background: #e3f2fd;
+  color: #1976d2;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* Resume Button */
+.btn-resume {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: #f0f7ff;
+  color: #4a90e2;
+  text-decoration: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  border: 1px solid #4a90e2;
+  transition: all 0.2s;
+}
+
+.btn-resume:hover {
+  background: #4a90e2;
+  color: white;
+}
+
+.no-resume {
+  color: #999;
+  font-size: 13px;
+  font-style: italic;
+}
+
+/* Status Badges */
+.status-badge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-pending {
+  background: #fff3e0;
+  color: #e65100;
+}
+
+.status-reviewing {
+  background: #e3f2fd;
+  color: #1976d2;
+}
+
+.status-shortlisted {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.status-rejected {
+  background: #ffebee;
+  color: #c62828;
+}
+
+.status-hired {
+  background: #f3e5f5;
+  color: #7b1fa2;
+}
+
+/* Action Cell */
+.action-cell {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.status-select {
+  padding: 8px 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 13px;
+  background: #fff;
+  cursor: pointer;
+  min-width: 120px;
+}
+
+.status-select:focus {
+  outline: none;
+  border-color: #4a90e2;
+}
+
+.btn-profile {
+  padding: 8px 14px;
+  background: #6c757d;
+  color: white;
+  text-decoration: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+
+.btn-profile:hover {
+  background: #5a6268;
+}
+
+/* Empty State */
+.no-applicants {
+  text-align: center;
+  padding: 60px 20px;
+  background: #fff;
+  border-radius: 12px;
+  border: 2px dashed #e1e8ed;
+}
+
+.no-data-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.no-applicants h3 {
+  margin: 0 0 8px 0;
+  color: #1a1a1a;
+  font-size: 20px;
+}
+
+.no-applicants p {
+  margin: 0;
+  color: #666;
+  font-size: 14px;
+}
+
+/* Loading & Error States */
+.loading-state, .error-state {
+  text-align: center;
+  padding: 60px 20px;
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #e1e8ed;
+}
+
+.error-state h3 {
+  color: #c62828;
+  margin: 0 0 8px 0;
+}
+
+.btn-retry {
+  margin-top: 16px;
+  padding: 10px 20px;
+  background: #4a90e2;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.btn-retry:hover {
+  background: #357abd;
+}
+
+/* Footer */
+.table-footer {
+  display: flex;
+  justify-content: space-between;
+  padding: 16px 20px;
+  background: #f8f9fa;
+  border-top: 1px solid #e1e8ed;
+  font-size: 12px;
+  color: #666;
+  margin-top: 20px;
+  border-radius: 0 0 12px 12px;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .applicants-table {
+    font-size: 13px;
+  }
+  
+  .applicants-table th,
+  .applicants-table td {
+    padding: 12px;
+  }
+  
+  .action-cell {
+    flex-direction: column;
+    gap: 6px;
+  }
+}
+
+@media (max-width: 768px) {
+  .applicants-header {
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .header-stats {
+    width: 100%;
+    justify-content: flex-start;
+  }
+  
+  .applicants-table-container {
+    overflow-x: auto;
+  }
+  
+  .applicants-table {
+    min-width: 900px;
+  }
+}

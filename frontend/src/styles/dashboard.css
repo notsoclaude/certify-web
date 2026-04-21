@@ -1,0 +1,419 @@
+/* Dashboard Page Styles */
+
+.dashboard-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.dashboard-page h1 {
+  font-size: 2rem;
+  color: #1f2937;
+  margin-bottom: 10px;
+}
+
+.dashboard-page > p {
+  color: #6b7280;
+  margin-bottom: 30px;
+}
+
+/* System Panel */
+.system-panel {
+  background: white;
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  margin-bottom: 30px;
+}
+
+.system-panel h3 {
+  font-size: 1.1rem;
+  color: #374151;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.status-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 16px;
+}
+
+.status-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px;
+  background: #f9fafb;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.status-icon {
+  font-size: 1.5rem;
+  margin-bottom: 8px;
+}
+
+.status-label {
+  font-size: 0.85rem;
+  color: #6b7280;
+  margin-bottom: 4px;
+}
+
+.status-value {
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 12px;
+  text-transform: capitalize;
+}
+
+.status-value.online,
+.status-value.connected,
+.status-value.ready {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.status-value.offline,
+.status-value.error,
+.status-value.unknown {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.status-value.standby {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+/* Dashboard Grid */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+  margin-bottom: 30px;
+}
+
+.dashboard-card {
+  background: white;
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.dashboard-card h3 {
+  font-size: 1.1rem;
+  color: #374151;
+  margin-bottom: 16px;
+}
+
+/* Stats Row */
+.stats-row {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 20px;
+  background: #f3f4f6;
+  border-radius: 8px;
+  min-width: 80px;
+}
+
+.stat .number {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.stat .label {
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+.stat.pending {
+  background: #fef3c7;
+}
+
+.stat.pending .number {
+  color: #92400e;
+}
+
+.stat.reviewed {
+  background: #dbeafe;
+}
+
+.stat.reviewed .number {
+  color: #1e40af;
+}
+
+.stat.accepted {
+  background: #d1fae5;
+}
+
+.stat.accepted .number {
+  color: #065f46;
+}
+
+/* Progress Bar */
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: #e5e7eb;
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 12px 0;
+}
+
+.progress {
+  height: 100%;
+  background: linear-gradient(90deg, #2563eb, #10b981);
+  border-radius: 4px;
+  transition: width 0.3s;
+}
+
+/* Applications List */
+.applications-list {
+  background: white;
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.applications-list h3 {
+  font-size: 1.1rem;
+  color: #374151;
+  margin-bottom: 20px;
+}
+
+.application-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  border-bottom: 1px solid #e5e7eb;
+  transition: background-color 0.2s ease;
+}
+
+.application-item:hover {
+  background-color: #f9fafb;
+}
+
+.application-item:last-child {
+  border-bottom: none;
+}
+
+.app-info {
+  flex: 1;
+}
+
+.app-info h4 {
+  font-size: 1rem;
+  color: #1f2937;
+  margin-bottom: 4px;
+}
+
+.app-info p {
+  font-size: 0.9rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+.status-badge {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-transform: capitalize;
+  margin-right: 16px;
+}
+
+.status-badge.pending {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.status-badge.reviewed {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.status-badge.accepted {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.status-badge.rejected {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.date {
+  color: #9ca3af;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+/* Buttons */
+.btn-view,
+.btn-edit {
+  padding: 8px 16px;
+  background: #eff6ff;
+  color: #2563eb;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-view:hover,
+.btn-edit:hover {
+  background: #dbeafe;
+}
+
+/* ============================================
+   SAVED JOBS PREVIEW SECTION
+   ============================================ */
+
+.saved-jobs-preview {
+  background: white;
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  margin-top: 30px;
+}
+
+.saved-jobs-preview h3 {
+  font-size: 1.1rem;
+  color: #374151;
+  margin: 0 0 20px 0;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #f3f4f6;
+}
+
+/* Individual saved job item */
+.saved-jobs-preview .application-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  border-bottom: 1px solid #e5e7eb;
+  transition: background-color 0.2s ease;
+  cursor: pointer;
+}
+
+.saved-jobs-preview .application-item:hover {
+  background-color: #f9fafb;
+}
+
+.saved-jobs-preview .application-item:last-child {
+  border-bottom: none;
+}
+
+/* Job info styling */
+.saved-jobs-preview .app-info {
+  flex: 1;
+}
+
+.saved-jobs-preview .app-info h4 {
+  font-size: 1rem;
+  color: #1f2937;
+  margin: 0 0 6px 0;
+  font-weight: 600;
+}
+
+.saved-jobs-preview .app-info p {
+  font-size: 0.9rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+/* Location/date styling */
+.saved-jobs-preview .date {
+  color: #9ca3af;
+  font-size: 0.85rem;
+  white-space: nowrap;
+  margin-left: 16px;
+}
+
+/* View All button */
+.saved-jobs-preview .btn-view-all {
+  width: 100%;
+  margin-top: 16px;
+  padding: 12px;
+  background: #f3f4f6;
+  color: #374151;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.saved-jobs-preview .btn-view-all:hover {
+  background: #e5e7eb;
+  color: #1f2937;
+}
+
+/* ============================================
+   LOADING & EMPTY STATES
+   ============================================ */
+
+.loading-state {
+  text-align: center;
+  padding: 40px;
+  color: #6b7280;
+}
+
+.no-applications {
+  text-align: center;
+  padding: 40px;
+  color: #6b7280;
+}
+
+.no-applications p {
+  margin-bottom: 16px;
+}
+
+.btn-browse {
+  padding: 10px 20px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-browse:hover {
+  background: #1d4ed8;
+}
+
+/* Error state */
+.error-state {
+  background: #fee2e2;
+  color: #991b1b;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.btn-retry {
+  margin-top: 12px;
+  padding: 8px 16px;
+  background: #991b1b;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}

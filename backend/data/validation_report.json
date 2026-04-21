@@ -1,0 +1,11 @@
+{
+  "processed": 1,
+  "errors": [],
+  "converted": [
+    {
+      "xml": "D:\\certify-web\\backend\\data\\jobs.xml",
+      "json": "D:\\certify-web\\backend\\data\\jobs_converted.json",
+      "records": 4
+    }
+  ]
+}
