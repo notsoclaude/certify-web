@@ -35,15 +35,17 @@ def allowed_file(filename):
 # =========================
 # CORS CONFIGURATION
 # =========================
+frontend_url = os.getenv("FRONTEND_URL", "http://localhost:5173")
+
 CORS(app, resources={
     r"/api/*": {
-        "origins": ["http://localhost:5173", "http://127.0.0.1:5173"],
+        "origins": [frontend_url, "http://localhost:5173", "http://127.0.0.1:5173"],
         "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
         "allow_headers": ["Content-Type", "Authorization"],
         "supports_credentials": True
     },
     r"/uploads/*": {
-        "origins": ["http://localhost:5173", "http://127.0.0.1:5173"],
+        "origins": [frontend_url, "http://localhost:5173", "http://127.0.0.1:5173"],
         "methods": ["GET", "OPTIONS"],
         "supports_credentials": True
     }
@@ -69,12 +71,8 @@ def force_json_content_type():
 # DATABASE CONFIGURATION
 # (LOCAL + DEPLOY SAFE)
 # =========================
-
-import os
-
 def get_db_config():
     """Return DB config depending on environment (local vs cloud)"""
-    
     # 🌐 PRODUCTION (Render / Cloud)
     if os.getenv("DB_HOST"):
         return {
@@ -84,7 +82,6 @@ def get_db_config():
             "password": os.getenv("DB_PASSWORD"),
             "port": os.getenv("DB_PORT", "5432")
         }
-
     # 💻 LOCAL DEVELOPMENT
     return {
         "host": "localhost",
