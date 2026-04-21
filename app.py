@@ -149,6 +149,54 @@ def home():
     return "CERTify API Running"
 
 # =========================
+# 🆕 DATABASE SETUP ROUTE (Run once on Render)
+# =========================
+@app.route('/api/setup')
+def setup_database():
+    """One-time setup: creates tables and adds sample data"""
+    try:
+        init_db()  # Creates all tables
+        
+        # Add sample data without needing JSON file
+        conn = get_db()
+        cursor = conn.cursor()
+        
+        # Add sample companies
+        cursor.execute("""
+            INSERT INTO companies (name, location, industry) 
+            VALUES ('Tech Corp', 'Remote', 'Technology'),
+                   ('DataSystems Inc', 'New York', 'Data Analytics'),
+                   ('CloudNative Labs', 'San Francisco', 'Cloud Computing')
+            ON CONFLICT (name) DO NOTHING
+        """)
+        
+        # Add sample jobs
+        cursor.execute("""
+            INSERT INTO jobs (job_id, title, company_id, employer_id, location, job_type, salary_min, salary_max, description, posted_date, status)
+            VALUES 
+                ('JOB-001', 'Software Engineer', 1, 'EMP001', 'Remote', 'Full-time', 70000, 120000, 'Build amazing web applications with our team. Experience with React and Python preferred. Full remote position with flexible hours.', CURRENT_DATE, 'active'),
+                ('JOB-002', 'Data Analyst', 2, 'EMP002', 'New York', 'Full-time', 60000, 90000, 'Analyze large datasets and create actionable insights. SQL and Python required. Work with a team of experienced data scientists.', CURRENT_DATE, 'active'),
+                ('JOB-003', 'DevOps Engineer', 3, 'EMP003', 'San Francisco', 'Full-time', 80000, 140000, 'Manage cloud infrastructure and CI/CD pipelines. AWS, Docker, and Kubernetes experience required. Competitive benefits package.', CURRENT_DATE, 'active')
+            ON CONFLICT (job_id) DO NOTHING
+        """)
+        
+        conn.commit()
+        cursor.close()
+        conn.close()
+        
+        return jsonify({
+            "status": "success", 
+            "message": "✅ Database initialized with sample data"
+        })
+    except Exception as e:
+        import traceback
+        print(traceback.format_exc())
+        return jsonify({
+            "status": "error", 
+            "message": str(e)
+        }), 500
+
+# =========================
 # INITIALIZE DATABASE
 # =========================
 def init_db():
@@ -892,7 +940,7 @@ def get_etl_status():
 # =========================
 if __name__ == '__main__':
     init_auth_tables()
-    # init_db()
-    # seed_json_data()
+    init_db()        # Only run via /api/setup on Render
+    seed_json_data() # Only run via /api/setup on Render
     print("🚀 RUNNING ON http://localhost:5000")
     app.run(debug=True)
