@@ -67,14 +67,29 @@ def force_json_content_type():
 
 # =========================
 # DATABASE CONFIGURATION
+# (LOCAL + DEPLOY SAFE)
 # =========================
-DB_CONFIG = {
-    "host": "localhost",
-    "database": "certify_db",
-    "user": "postgres",
-    "password": "shanlhiemenez",
-    "port": "5432"
-}
+
+import os
+
+if os.getenv("DB_HOST"):
+    # 🌐 PRODUCTION (Render / Cloud)
+    DB_CONFIG = {
+        "host": os.getenv("DB_HOST"),
+        "database": os.getenv("DB_NAME"),
+        "user": os.getenv("DB_USER"),
+        "password": os.getenv("DB_PASSWORD"),
+        "port": os.getenv("DB_PORT", "5432")
+    }
+else:
+    # 💻 LOCAL DEVELOPMENT
+    DB_CONFIG = {
+        "host": "localhost",
+        "database": "certify_db",
+        "user": "postgres",
+        "password": "shanlhiemenez",
+        "port": "5432"
+    }
 
 def get_db():
     return psycopg2.connect(**DB_CONFIG)
