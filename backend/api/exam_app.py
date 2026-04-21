@@ -72,24 +72,29 @@ def force_json_content_type():
 
 import os
 
-if os.getenv("DB_HOST"):
+def get_db_config():
+    """Return DB config depending on environment (local vs cloud)"""
+    
     # 🌐 PRODUCTION (Render / Cloud)
-    DB_CONFIG = {
-        "host": os.getenv("DB_HOST"),
-        "database": os.getenv("DB_NAME"),
-        "user": os.getenv("DB_USER"),
-        "password": os.getenv("DB_PASSWORD"),
-        "port": os.getenv("DB_PORT", "5432")
-    }
-else:
+    if os.getenv("DB_HOST"):
+        return {
+            "host": os.getenv("DB_HOST"),
+            "database": os.getenv("DB_NAME"),
+            "user": os.getenv("DB_USER"),
+            "password": os.getenv("DB_PASSWORD"),
+            "port": os.getenv("DB_PORT", "5432")
+        }
+
     # 💻 LOCAL DEVELOPMENT
-    DB_CONFIG = {
+    return {
         "host": "localhost",
         "database": "certify_db",
         "user": "postgres",
         "password": "shanlhiemenez",
         "port": "5432"
     }
+
+DB_CONFIG = get_db_config()
 
 def get_db():
     return psycopg2.connect(**DB_CONFIG)
