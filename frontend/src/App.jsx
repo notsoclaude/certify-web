@@ -29,8 +29,12 @@ import EditJob from './pages/EditJob'
 import Applicants from './components/Applicants'
 import Candidates from './pages/Candidates'
 
-
 import './App.css'
+
+/* =========================
+   API CONFIG (FIXED)
+========================= */
+const API_URL = "https://certify-api-ho6g.onrender.com"
 
 /* =========================
    LAYOUT
@@ -125,17 +129,12 @@ function AppContent({ systemHealth }) {
         <Route path="/about" element={<About />} />
         <Route path="/system" element={<ETLStatus />} />
 
-        
         {/* EMPLOYER JOB LIST */}
         <Route
           path="/employer/job"
           element={
             <ProtectedRoute>
-              {isEmployer ? (
-                <EmployerJob />
-              ) : (
-                <Navigate to="/" replace />
-              )}
+              {isEmployer ? <EmployerJob /> : <Navigate to="/" replace />}
             </ProtectedRoute>
           }
         />
@@ -145,11 +144,7 @@ function AppContent({ systemHealth }) {
           path="/employer/post-job"
           element={
             <ProtectedRoute>
-              {isEmployer ? (
-                <EmployerPostJob />
-              ) : (
-                <Navigate to="/" replace />
-              )}
+              {isEmployer ? <EmployerPostJob /> : <Navigate to="/" replace />}
             </ProtectedRoute>
           }
         />
@@ -159,42 +154,30 @@ function AppContent({ systemHealth }) {
           path="/employer/jobs/edit/:jobId"
           element={
             <ProtectedRoute>
-              {isEmployer ? (
-                <EditJob />
-              ) : (
-                <Navigate to="/" replace />
-              )}
+              {isEmployer ? <EditJob /> : <Navigate to="/" replace />}
             </ProtectedRoute>
           }
         />
 
-        {/* APPLICANTS ROUTE */}
+        {/* APPLICANTS */}
         <Route
           path="/employer/jobs/:jobId/applicants"
           element={
             <ProtectedRoute>
-              {isEmployer ? (
-                <Applicants />
-              ) : (
-                <Navigate to="/" replace />
-              )}
-            </ProtectedRoute>
-          }
-        />
-        {/* ✅ CANDIDATES ROUTE - All applicants */}
-        <Route
-          path="/employer/candidates"
-          element={
-            <ProtectedRoute>
-              {isEmployer ? (
-                <Candidates />
-              ) : (
-                <Navigate to="/" replace />
-              )}
+              {isEmployer ? <Applicants /> : <Navigate to="/" replace />}
             </ProtectedRoute>
           }
         />
 
+        {/* CANDIDATES */}
+        <Route
+          path="/employer/candidates"
+          element={
+            <ProtectedRoute>
+              {isEmployer ? <Candidates /> : <Navigate to="/" replace />}
+            </ProtectedRoute>
+          }
+        />
 
         {/* DASHBOARD */}
         <Route
@@ -243,7 +226,7 @@ function App() {
 
   const checkSystemHealth = async () => {
     try {
-      const res = await fetch('http://127.0.0.1:5000/api/stats')
+      const res = await fetch(`${API_URL}/api/stats`)
       const data = await res.json()
 
       if (res.ok && data.status === 'success') {
