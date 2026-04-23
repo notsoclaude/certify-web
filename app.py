@@ -33,17 +33,27 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 # =========================
-# CORS CONFIGURATION
+# CORS CONFIGURATION - UPDATED FOR VERCEL
 # =========================
 CORS(app, resources={
     r"/api/*": {
-        "origins": ["http://localhost:5173", "http://127.0.0.1:5173"],
+        "origins": [
+            "http://localhost:5173", 
+            "http://127.0.0.1:5173",
+            "https://certify-frontend.vercel.app",
+            "https://*.vercel.app"
+        ],
         "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
         "allow_headers": ["Content-Type", "Authorization"],
         "supports_credentials": True
     },
     r"/uploads/*": {
-        "origins": ["http://localhost:5173", "http://127.0.0.1:5173"],
+        "origins": [
+            "http://localhost:5173", 
+            "http://127.0.0.1:5173",
+            "https://certify-frontend.vercel.app",
+            "https://*.vercel.app"
+        ],
         "methods": ["GET", "OPTIONS"],
         "supports_credentials": True
     }
@@ -871,11 +881,11 @@ def get_etl_status():
     })
 
 # =========================
-# START SERVER
+# START SERVER - PRODUCTION SAFE
 # =========================
 if __name__ == '__main__':
     init_auth_tables()
-    init_db()
-    seed_json_data()
+    # init_db()        # ← RUN ONCE, THEN COMMENT OUT
+    # seed_json_data() # ← RUN ONCE, THEN COMMENT OUT
     print("🚀 RUNNING ON http://localhost:5000")
     app.run(debug=True)
