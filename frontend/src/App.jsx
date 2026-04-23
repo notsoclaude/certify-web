@@ -32,7 +32,7 @@ import Candidates from './pages/Candidates'
 import './App.css'
 
 /* =========================
-   API CONFIG (FIXED)
+   API CONFIG
 ========================= */
 const API_URL = "https://certify-api-ho6g.onrender.com"
 
@@ -220,24 +220,56 @@ function App() {
 
   useEffect(() => {
     checkSystemHealth()
-    const interval = setInterval(checkSystemHealth, 30000)
+
+    const interval = setInterval(() => {
+      checkSystemHealth()
+    }, 30000)
+
     return () => clearInterval(interval)
   }, [])
 
-  const checkSystemHealth = async () => {
+  /* =========================
+     FIXED HEALTH CHECK
+  ========================= */
+  const checkSystemHealth = async (retryCount = 0) => {
     try {
-      const res = await fetch(`${API_URL}/api/stats`)
+      const controller = new AbortController()
+      const timeout = setTimeout(() => controller.abort(), 8000)
+
+      const res = await fetch(`${API_URL}/api/stats`, {
+        signal: controller.signal
+      })
+
+      clearTimeout(timeout)
+
       const data = await res.json()
 
-      if (res.ok && data.status === 'success') {
+      if (res.ok && data?.status === 'success') {
         setSystemHealth({
           api: 'online',
-          database: data.data.database_status || 'connected',
+          database: data?.data?.database_status || 'connected',
           etl: 'ready',
           messaging: 'standby'
         })
+        return
       }
-    } catch {
+
+      throw new Error('Invalid response')
+    } catch (err) {
+      console.error(`Health check failed (attempt ${retryCount + 1}):`, err)
+
+      // Retry for Render cold start
+      if (retryCount < 5) {
+        setSystemHealth(prev => ({
+          ...prev,
+          api: 'starting...'
+        }))
+
+        setTimeout(() => checkSystemHealth(retryCount + 1), 5000)
+        return
+      }
+
+      // Only mark offline after retries fail
       setSystemHealth({
         api: 'offline',
         database: 'unknown',
