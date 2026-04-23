@@ -2,6 +2,7 @@
 CERTify API - COMPLETE WORKING VERSION
 Jobs + Auth + Saved Jobs + Applicants + System Stats + Resume Upload + Dashboard
 FIXED: Proper user email lookup for applications
+FIXED: Database no longer drops tables on restart
 """
 
 from flask import Flask, jsonify, request, send_from_directory
@@ -33,7 +34,7 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 # =========================
-# CORS CONFIGURATION - UPDATED WITH YOUR VERCEL URLS
+# CORS CONFIGURATION - ALL YOUR VERCEL URLS
 # =========================
 CORS(app, resources={
     r"/api/*": {
@@ -42,6 +43,8 @@ CORS(app, resources={
             "http://127.0.0.1:5173",
             "https://certify-4dqgee4ek-notsoclaudes-projects.vercel.app",
             "https://certify-azybmgzvz-notsoclaudes-projects.vercel.app",
+            "https://certify-web-notsoclaudes-projects.vercel.app",
+            "https://certify-web-git-main-notsoclaudes-projects.vercel.app",
             "https://*.vercel.app"
         ],
         "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
@@ -54,6 +57,8 @@ CORS(app, resources={
             "http://127.0.0.1:5173",
             "https://certify-4dqgee4ek-notsoclaudes-projects.vercel.app",
             "https://certify-azybmgzvz-notsoclaudes-projects.vercel.app",
+            "https://certify-web-notsoclaudes-projects.vercel.app",
+            "https://certify-web-git-main-notsoclaudes-projects.vercel.app",
             "https://*.vercel.app"
         ],
         "methods": ["GET", "OPTIONS"],
@@ -89,11 +94,10 @@ DB_CONFIG = {
 }
 
 def get_db():
-    # Internal Render connections don't need SSL
     return psycopg2.connect(**DB_CONFIG)
 
 # =========================
-# 🔧 FIXED: Flexible User Email Retrieval
+# FIXED: Flexible User Email Retrieval
 # =========================
 _USER_ID_COLUMN = None
 
@@ -145,19 +149,15 @@ def home():
     return "CERTify API Running"
 
 # =========================
-# INITIALIZE DATABASE
+# INITIALIZE DATABASE - PRODUCTION SAFE
 # =========================
 def init_db():
     conn = get_db()
     cursor = conn.cursor()
 
-    cursor.execute("DROP TABLE IF EXISTS saved_jobs CASCADE")
-    cursor.execute("DROP TABLE IF EXISTS applications CASCADE")
-    cursor.execute("DROP TABLE IF EXISTS jobs CASCADE")
-    cursor.execute("DROP TABLE IF EXISTS companies CASCADE")
-
+    # ✅ SAFE: CREATE TABLE IF NOT EXISTS (no data loss on restart)
     cursor.execute("""
-    CREATE TABLE companies (
+    CREATE TABLE IF NOT EXISTS companies (
         company_id SERIAL PRIMARY KEY,
         name VARCHAR(255) UNIQUE NOT NULL,
         location VARCHAR(255),
@@ -167,7 +167,7 @@ def init_db():
     """)
 
     cursor.execute("""
-    CREATE TABLE jobs (
+    CREATE TABLE IF NOT EXISTS jobs (
         job_id VARCHAR(50) PRIMARY KEY,
         title VARCHAR(255) NOT NULL,
         company_id INTEGER REFERENCES companies(company_id),
@@ -188,7 +188,7 @@ def init_db():
     """)
 
     cursor.execute("""
-    CREATE TABLE saved_jobs (
+    CREATE TABLE IF NOT EXISTS saved_jobs (
         id SERIAL PRIMARY KEY,
         user_id VARCHAR(50),
         job_id VARCHAR(50),
@@ -198,7 +198,7 @@ def init_db():
     """)
 
     cursor.execute("""
-    CREATE TABLE applications (
+    CREATE TABLE IF NOT EXISTS applications (
         id VARCHAR(50) PRIMARY KEY,
         job_id VARCHAR(50),
         applicant_name VARCHAR(255),
@@ -216,7 +216,7 @@ def init_db():
     conn.commit()
     cursor.close()
     conn.close()
-    print("✅ Database initialized")
+    print("✅ Database initialized (tables preserved)")
 
 def seed_json_data():
     api_dir = os.path.dirname(os.path.abspath(__file__))
@@ -232,6 +232,16 @@ def seed_json_data():
     
     conn = get_db()
     cursor = conn.cursor()
+    
+    # ✅ Check if jobs already exist to avoid re-seeding
+    cursor.execute("SELECT COUNT(*) FROM jobs")
+    existing_count = cursor.fetchone()[0]
+    
+    if existing_count > 0:
+        print(f"✅ {existing_count} jobs already in database, skipping seed")
+        cursor.close()
+        conn.close()
+        return
     
     for job in json_data.get('jobs', []):
         company_name = job.get('company', 'Unknown')
@@ -402,18 +412,12 @@ def update_job(current_user, current_user_type, job_id):
         conn = get_db()
         cursor = conn.cursor()
         
-        # First verify the job exists and belongs to this employer
         cursor.execute("SELECT employer_id FROM jobs WHERE job_id = %s", (job_id,))
         result = cursor.fetchone()
         
         if not result:
             return jsonify({"status": "error", "message": "Job not found"}), 404
-            
-        # Optional: check if current_user owns this job
-        # if result[0] != current_user:
-        #     return jsonify({"status": "error", "message": "Unauthorized"}), 403
         
-        # Handle company update
         company_name = data.get('company')
         company_id = None
         if company_name:
@@ -428,7 +432,6 @@ def update_job(current_user, current_user_type, job_id):
                 )
                 company_id = cursor.fetchone()[0]
         
-        # Build dynamic update query
         update_fields = []
         values = []
         
@@ -680,7 +683,7 @@ def check_saved(current_user, current_user_type, job_id):
         return jsonify({"status": "error", "message": str(e)}), 500
 
 # =========================
-# ✅ FIXED: GET MY APPLICATIONS (JOB SEEKER)
+# FIXED: GET MY APPLICATIONS (JOB SEEKER)
 # =========================
 @app.route('/api/my-applications', methods=['GET'])
 @token_required
@@ -755,7 +758,7 @@ def get_my_applications(current_user, current_user_type):
         }), 500
 
 # =========================
-# ✅ FIXED: DEBUG Check all applications
+# FIXED: DEBUG Check all applications
 # =========================
 @app.route('/api/debug/applications', methods=['GET'])
 @token_required
@@ -789,7 +792,7 @@ def debug_applications(current_user, current_user_type):
         return jsonify({"status": "error", "message": str(e)}), 500
 
 # =========================
-# 🆕 FIXED: DASHBOARD RECENT APPLICATIONS
+# FIXED: DASHBOARD RECENT APPLICATIONS
 # =========================
 @app.route('/api/dashboard/recent-applications', methods=['GET'])
 @token_required
@@ -849,12 +852,10 @@ def get_recent_applications(current_user, current_user_type):
 # RABBITMQ INTEGRATION (Message Storage)
 # =========================
 
-# Storage for messages
 etl_messages = []
 
 @app.route('/api/etl-log', methods=['POST'])
 def receive_etl_log():
-    """Receive messages from RabbitMQ consumer"""
     try:
         data = request.get_json(force=True)
         
@@ -869,7 +870,6 @@ def receive_etl_log():
         }
         etl_messages.append(msg)
         
-        # Print so you see it in Flask console
         print(f"\n📨 [RabbitMQ] {data.get('event')}: {data.get('title', 'N/A')}")
         
         return jsonify({'status': 'success', 'received': True}), 201
@@ -880,11 +880,10 @@ def receive_etl_log():
 
 @app.route('/api/etl/status', methods=['GET'])
 def get_etl_status():
-    """Frontend polls this to get messages"""
     return jsonify({
         'status': 'success',
         'data': {
-            'recent_logs': etl_messages[-20:],  # Last 20
+            'recent_logs': etl_messages[-20:],
             'total_messages': len(etl_messages)
         }
     })
@@ -894,7 +893,7 @@ def get_etl_status():
 # =========================
 if __name__ == '__main__':
     init_auth_tables()
-    init_db()        # ← RUN ONCE, THEN COMMENT OUT
-    seed_json_data() # ← RUN ONCE, THEN COMMENT OUT
+    init_db()        # Safe: CREATE TABLE IF NOT EXISTS
+    seed_json_data() # Safe: skips if jobs already exist
     print("🚀 RUNNING ON http://localhost:5000")
     app.run(debug=True)
