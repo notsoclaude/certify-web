@@ -1,5 +1,5 @@
 """
-CERTify Authentication API - CLEAN FIXED VERSION
+CERTify Authentication API - FIXED PRODUCTION SAFE
 """
 
 from flask import Blueprint, request, jsonify
@@ -14,160 +14,66 @@ import os
 auth_bp = Blueprint('auth', __name__)
 
 # =========================
-# CONFIG
+# CONFIG (FIXED FOR RENDER)
 # =========================
 JWT_SECRET = os.getenv('JWT_SECRET', 'certify-secret-key')
 JWT_EXPIRATION = 24  # hours
 
-DB_CONFIG = {
-    "host": "localhost",
-    "database": "certify_db",
-    "user": "postgres",
-    "password": "shanlhiemenez",
-    "port": "5432"
-}
 
 def get_db():
-    return psycopg2.connect(**DB_CONFIG)
+    return psycopg2.connect(
+        host=os.getenv("DB_HOST"),
+        database=os.getenv("DB_NAME"),
+        user=os.getenv("DB_USER"),
+        password=os.getenv("DB_PASSWORD"),
+        port=os.getenv("DB_PORT", "5432")
+    )
 
 # =========================
-# TOKEN CHECK - FIXED
+# TOKEN CHECK (SAFE)
 # =========================
 def token_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
-        # Allow browser preflight OPTIONS requests
+
         if request.method == 'OPTIONS':
-            response = jsonify({'status': 'success'})
-            response.status_code = 200
-            response.headers.add('Access-Control-Allow-Origin', '*')
-            response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
-            response.headers.add('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS')
-            return response
+            return jsonify({'status': 'ok'}), 200
 
         token = None
         auth_header = request.headers.get('Authorization')
 
-        # Better token extraction
         if auth_header:
             parts = auth_header.split()
-
-            if len(parts) == 2 and parts[0].lower() == 'bearer':
-                token = parts[1]
-            elif len(parts) == 1:
-                token = parts[0]
+            token = parts[-1]
 
         if not token:
-            return jsonify({
-                'status': 'error',
-                'message': 'Token missing'
-            }), 401
+            return jsonify({'status': 'error', 'message': 'Token missing'}), 401
 
         try:
             data = jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
             current_user = data['user_id']
             current_role = data.get('role', 'user')
 
-        except jwt.ExpiredSignatureError:
-            return jsonify({
-                'status': 'error',
-                'message': 'Token expired'
-            }), 401
-
-        except jwt.InvalidTokenError:
-            return jsonify({
-                'status': 'error',
-                'message': 'Invalid token'
-            }), 401
+        except Exception:
+            return jsonify({'status': 'error', 'message': 'Invalid token'}), 401
 
         return f(current_user, current_role, *args, **kwargs)
 
     return decorated
 
 # =========================
-# REGISTER
-# =========================
-@auth_bp.route('/register', methods=['POST'])
-def register():
-    try:
-        data = request.get_json()
-
-        required = ['email', 'password', 'first_name', 'last_name', 'user_type']
-        if not all(data.get(f) for f in required):
-            return jsonify({'status': 'error', 'message': 'Missing fields'}), 400
-
-        email = data['email'].lower().strip()
-        password = data['password']
-        user_type = data['user_type']
-
-        if user_type not in ['jobseeker', 'employer']:
-            return jsonify({'status': 'error', 'message': 'Invalid user type'}), 400
-
-        if len(password) < 8:
-            return jsonify({'status': 'error', 'message': 'Password too short'}), 400
-
-        conn = get_db()
-        cursor = conn.cursor()
-
-        cursor.execute("SELECT user_id FROM users WHERE email=%s", (email,))
-        if cursor.fetchone():
-            cursor.close()
-            conn.close()
-            return jsonify({'status': 'error', 'message': 'Email already exists'}), 409
-
-        hashed_pw = bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
-
-        user_id = f"USR-{datetime.datetime.now().strftime('%Y%m%d%H%M%S')}"
-
-        cursor.execute("""
-            INSERT INTO users (user_id, email, password_hash, first_name, last_name, user_type)
-            VALUES (%s, %s, %s, %s, %s, %s)
-        """, (
-            user_id,
-            email,
-            hashed_pw,
-            data['first_name'],
-            data['last_name'],
-            user_type
-        ))
-
-        conn.commit()
-        cursor.close()
-        conn.close()
-
-        token = jwt.encode({
-            'user_id': user_id,
-            'role': user_type,
-            'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=JWT_EXPIRATION)
-        }, JWT_SECRET, algorithm="HS256")
-
-        return jsonify({
-            'status': 'success',
-            'data': {
-                'token': token,
-                'user': {
-                    'user_id': user_id,
-                    'email': email,
-                    'first_name': data['first_name'],
-                    'last_name': data['last_name'],
-                    'user_type': user_type
-                }
-            }
-        }), 201
-
-    except Exception as e:
-        return jsonify({'status': 'error', 'message': str(e)}), 500
-
-# =========================
-# LOGIN
+# LOGIN (FIXED CRASH SAFE)
 # =========================
 @auth_bp.route('/login', methods=['POST'])
 def login():
     try:
-        data = request.get_json()
+        data = request.get_json() or {}
 
         email = data.get('email', '').lower().strip()
         password = data.get('password', '')
+
+        if not email or not password:
+            return jsonify({'status': 'error', 'message': 'Missing credentials'}), 400
 
         conn = get_db()
         cursor = conn.cursor(cursor_factory=RealDictCursor)
@@ -178,10 +84,18 @@ def login():
         cursor.close()
         conn.close()
 
-        if not user:
+        if not user or not user.get('password_hash'):
             return jsonify({'status': 'error', 'message': 'Invalid credentials'}), 401
 
-        if not bcrypt.checkpw(password.encode(), user['password_hash'].encode()):
+        try:
+            valid = bcrypt.checkpw(
+                password.encode(),
+                user['password_hash'].encode()
+            )
+        except Exception:
+            return jsonify({'status': 'error', 'message': 'Password verification failed'}), 401
+
+        if not valid:
             return jsonify({'status': 'error', 'message': 'Invalid credentials'}), 401
 
         token = jwt.encode({
@@ -205,47 +119,51 @@ def login():
         })
 
     except Exception as e:
-        return jsonify({'status': 'error', 'message': str(e)}), 500
+        print("LOGIN ERROR:", e)
+        return jsonify({'status': 'error', 'message': 'Server error'}), 500
 
 # =========================
-# ME (FIXED - NO HANG, SAFE OUTPUT)
+# REGISTER (SAFE)
 # =========================
-@auth_bp.route('/me', methods=['GET', 'OPTIONS'])
-@token_required
-def me(current_user, current_role):
+@auth_bp.route('/register', methods=['POST'])
+def register():
     try:
+        data = request.get_json() or {}
+
+        email = data.get('email', '').lower().strip()
+        password = data.get('password', '')
+        first = data.get('first_name')
+        last = data.get('last_name')
+        user_type = data.get('user_type')
+
+        if not all([email, password, first, last, user_type]):
+            return jsonify({'status': 'error', 'message': 'Missing fields'}), 400
+
         conn = get_db()
-        cursor = conn.cursor(cursor_factory=RealDictCursor)
+        cursor = conn.cursor()
+
+        cursor.execute("SELECT user_id FROM users WHERE email=%s", (email,))
+        if cursor.fetchone():
+            return jsonify({'status': 'error', 'message': 'Email exists'}), 409
+
+        hashed = bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
+
+        user_id = f"USR-{datetime.datetime.now().strftime('%Y%m%d%H%M%S')}"
 
         cursor.execute("""
-            SELECT user_id, email, first_name, last_name, user_type
-            FROM users
-            WHERE user_id=%s
-        """, (current_user,))
+            INSERT INTO users (user_id, email, password_hash, first_name, last_name, user_type)
+            VALUES (%s,%s,%s,%s,%s,%s)
+        """, (user_id, email, hashed, first, last, user_type))
 
-        user = cursor.fetchone()
-
+        conn.commit()
         cursor.close()
         conn.close()
 
-        if not user:
-            return jsonify({
-                'status': 'error',
-                'message': 'User not found'
-            }), 404
-
-        return jsonify({
-            'status': 'success',
-            'data': {
-                'user': user
-            }
-        })
+        return jsonify({'status': 'success'}), 201
 
     except Exception as e:
-        return jsonify({
-            'status': 'error',
-            'message': str(e)
-        }), 500
+        print("REGISTER ERROR:", e)
+        return jsonify({'status': 'error', 'message': 'Server error'}), 500
 
 # =========================
 # INIT TABLES
@@ -266,25 +184,8 @@ def init_auth_tables():
         );
     """)
 
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS jobseeker_profiles (
-            id SERIAL PRIMARY KEY,
-            user_id VARCHAR(50),
-            phone VARCHAR(20)
-        );
-    """)
-
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS employer_profiles (
-            id SERIAL PRIMARY KEY,
-            user_id VARCHAR(50),
-            company_name VARCHAR(255),
-            position VARCHAR(100)
-        );
-    """)
-
     conn.commit()
     cursor.close()
     conn.close()
 
-    print("✅ AUTH TABLES READY")
+    print("AUTH READY")
