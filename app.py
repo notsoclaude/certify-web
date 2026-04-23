@@ -3,6 +3,7 @@ CERTify API - COMPLETE WORKING VERSION
 Jobs + Auth + Saved Jobs + Applicants + System Stats + Resume Upload + Dashboard
 FIXED: Proper user email lookup for applications
 FIXED: Database no longer drops tables on restart
+FIXED: Safe initialization via endpoint (Render free tier compatible)
 """
 
 from flask import Flask, jsonify, request, send_from_directory
@@ -149,100 +150,7 @@ def home():
     return "CERTify API Running"
 
 # =========================
-# TEMPORARY: DATABASE SETUP ROUTE
-# VISIT THIS ONCE, THEN REMOVE FROM CODE
-# =========================
-@app.route('/api/setup-db')
-def setup_db():
-    """One-time database setup - hit this URL once, then remove this route"""
-    try:
-        conn = get_db()
-        cursor = conn.cursor()
-        
-        cursor.execute("""
-        CREATE TABLE IF NOT EXISTS companies (
-            company_id SERIAL PRIMARY KEY,
-            name VARCHAR(255) UNIQUE NOT NULL,
-            location VARCHAR(255),
-            industry VARCHAR(100),
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        );
-        """)
-        
-        cursor.execute("""
-        CREATE TABLE IF NOT EXISTS jobs (
-            job_id VARCHAR(50) PRIMARY KEY,
-            title VARCHAR(255) NOT NULL,
-            company_id INTEGER REFERENCES companies(company_id),
-            employer_id VARCHAR(50),
-            location VARCHAR(255),
-            job_type VARCHAR(50),
-            salary_min DECIMAL(10,2),
-            salary_max DECIMAL(10,2),
-            description TEXT,
-            requirements TEXT[],
-            posted_date DATE,
-            expiry_date DATE,
-            status VARCHAR(20) DEFAULT 'active',
-            source VARCHAR(50),
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        );
-        """)
-        
-        cursor.execute("""
-        CREATE TABLE IF NOT EXISTS saved_jobs (
-            id SERIAL PRIMARY KEY,
-            user_id VARCHAR(50),
-            job_id VARCHAR(50),
-            saved_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            UNIQUE(user_id, job_id)
-        );
-        """)
-        
-        cursor.execute("""
-        CREATE TABLE IF NOT EXISTS applications (
-            id VARCHAR(50) PRIMARY KEY,
-            job_id VARCHAR(50),
-            applicant_name VARCHAR(255),
-            email VARCHAR(255),
-            phone VARCHAR(20),
-            cover_letter TEXT,
-            resume_url TEXT,
-            years_experience INTEGER DEFAULT 0,
-            headline VARCHAR(255),
-            status VARCHAR(20) DEFAULT 'pending',
-            applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        );
-        """)
-        
-        conn.commit()
-        
-        # Check what tables exist
-        cursor.execute("""
-            SELECT table_name 
-            FROM information_schema.tables 
-            WHERE table_schema = 'public' 
-            ORDER BY table_name
-        """)
-        tables = [t[0] for t in cursor.fetchall()]
-        
-        cursor.close()
-        conn.close()
-        
-        return jsonify({
-            "status": "success", 
-            "message": "✅ Tables created successfully!",
-            "tables": tables,
-            "next_step": "1. Test /api/stats  2. Delete this /api/setup-db route from code  3. Push again"
-        })
-    except Exception as e:
-        import traceback
-        print(traceback.format_exc())
-        return jsonify({"status": "error", "message": str(e)}), 500
-
-# =========================
-# INITIALIZE DATABASE - PRODUCTION SAFE
+# DATABASE INITIALIZATION FUNCTIONS
 # =========================
 def init_db():
     conn = get_db()
@@ -368,6 +276,48 @@ def seed_json_data():
     conn.close()
     print("✅ JSON data imported")
 
+# =========================
+# TEMPORARY: DATABASE SETUP ENDPOINT
+# HIT THIS ONCE AFTER DEPLOY, THEN REMOVE
+# =========================
+@app.route('/api/setup-db')
+def setup_db():
+    """One-time database setup - visit this URL in browser after deploy"""
+    try:
+        init_auth_tables()
+        init_db()
+        seed_json_data()
+        
+        # Verify tables exist
+        conn = get_db()
+        cursor = conn.cursor()
+        cursor.execute("""
+            SELECT table_name 
+            FROM information_schema.tables 
+            WHERE table_schema = 'public' 
+            ORDER BY table_name
+        """)
+        tables = [t[0] for t in cursor.fetchall()]
+        cursor.close()
+        conn.close()
+        
+        return jsonify({
+            "status": "success",
+            "message": "✅ Database setup complete!",
+            "tables": tables,
+            "instruction": "Now delete the /api/setup-db route and push again"
+        })
+    except Exception as e:
+        import traceback
+        print(traceback.format_exc())
+        return jsonify({
+            "status": "error",
+            "message": str(e)
+        }), 500
+
+# =========================
+# API ROUTES
+# =========================
 @app.route('/api/stats')
 def get_stats():
     try:
@@ -967,11 +917,8 @@ def get_etl_status():
     })
 
 # =========================
-# START SERVER - PRODUCTION SAFE
+# LOCAL DEVELOPMENT ONLY
 # =========================
 if __name__ == '__main__':
-    init_auth_tables()
-    init_db()        # Safe: CREATE TABLE IF NOT EXISTS
-    seed_json_data() # Safe: skips if jobs already exist
     print("🚀 RUNNING ON http://localhost:5000")
     app.run(debug=True)
