@@ -69,10 +69,10 @@ def force_json_content_type():
 # DATABASE CONFIGURATION
 # =========================
 DB_CONFIG = {
-    "host": "localhost",
-    "database": "certify_db",
-    "user": "postgres",
-    "password": "shanlhiemenez",
+    "host": "dpg-d7jp6d71kmc739h879g-a",
+    "database": "certify_db_eue5",
+    "user": "certify_user",
+    "password": "ce1oec6t5Bm2Yp3fi6XotFHzbCD0uEv3",
     "port": "5432"
 }
 
