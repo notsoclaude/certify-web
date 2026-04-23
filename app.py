@@ -69,15 +69,15 @@ def force_json_content_type():
 # DATABASE CONFIGURATION
 # =========================
 DB_CONFIG = {
-    "host": "dpg-d7jp6d71kmc739h879g-a",
-    "database": "certify_db_eue5",
-    "user": "certify_user",
-    "password": "ce1oec6t5Bm2Yp3fi6XotFHzbCD0uEv3",
-    "port": "5432"
+    "host": os.getenv("DB_HOST", "dpg-d7jp6d7lk1mc739h879g-a"),
+    "database": os.getenv("DB_NAME", "certify_db_eue5"),
+    "user": os.getenv("DB_USER", "certify_user"),
+    "password": os.getenv("DB_PASSWORD", "ce1oec6t5Bm2Yp3fi6XotFHzbCD0uEv3"),
+    "port": os.getenv("DB_PORT", "5432")
 }
 
 def get_db():
-    return psycopg2.connect(**DB_CONFIG)
+    return psycopg2.connect(**DB_CONFIG, sslmode='require')
 
 # =========================
 # 🔧 FIXED: Flexible User Email Retrieval
@@ -875,7 +875,7 @@ def get_etl_status():
 # =========================
 if __name__ == '__main__':
     init_auth_tables()
-    # init_db()
-    # seed_json_data()
+    init_db()
+    seed_json_data()
     print("🚀 RUNNING ON http://localhost:5000")
     app.run(debug=True)
