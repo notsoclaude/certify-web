@@ -894,7 +894,7 @@ def get_etl_status():
 # =========================
 if __name__ == '__main__':
     init_auth_tables()
-    # init_db()        # ← RUN ONCE, THEN COMMENT OUT
-    # seed_json_data() # ← RUN ONCE, THEN COMMENT OUT
+    init_db()        # ← RUN ONCE, THEN COMMENT OUT
+    seed_json_data() # ← RUN ONCE, THEN COMMENT OUT
     print("🚀 RUNNING ON http://localhost:5000")
     app.run(debug=True)
