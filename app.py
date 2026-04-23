@@ -33,14 +33,15 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 # =========================
-# CORS CONFIGURATION - UPDATED FOR VERCEL
+# CORS CONFIGURATION - UPDATED WITH YOUR VERCEL URLS
 # =========================
 CORS(app, resources={
     r"/api/*": {
         "origins": [
             "http://localhost:5173", 
             "http://127.0.0.1:5173",
-            "https://certify-frontend.vercel.app",
+            "https://certify-4dqgee4ek-notsoclaudes-projects.vercel.app",
+            "https://certify-azybmgzvz-notsoclaudes-projects.vercel.app",
             "https://*.vercel.app"
         ],
         "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
@@ -51,7 +52,8 @@ CORS(app, resources={
         "origins": [
             "http://localhost:5173", 
             "http://127.0.0.1:5173",
-            "https://certify-frontend.vercel.app",
+            "https://certify-4dqgee4ek-notsoclaudes-projects.vercel.app",
+            "https://certify-azybmgzvz-notsoclaudes-projects.vercel.app",
             "https://*.vercel.app"
         ],
         "methods": ["GET", "OPTIONS"],
@@ -87,7 +89,8 @@ DB_CONFIG = {
 }
 
 def get_db():
-    return psycopg2.connect(**DB_CONFIG, sslmode='require')
+    # Internal Render connections don't need SSL
+    return psycopg2.connect(**DB_CONFIG)
 
 # =========================
 # 🔧 FIXED: Flexible User Email Retrieval
@@ -279,7 +282,13 @@ def get_stats():
             }
         })
     except Exception as e:
-        return jsonify({"status": "error", "message": str(e)}), 500
+        import traceback
+        print(f"❌ STATS ERROR: {str(e)}")
+        print(traceback.format_exc())
+        return jsonify({
+            "status": "error", 
+            "message": str(e)
+        }), 500
 
 @app.route('/api/jobs')
 def get_jobs():
